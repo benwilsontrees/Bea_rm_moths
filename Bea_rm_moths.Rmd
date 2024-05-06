@@ -9,22 +9,38 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Bea's Code - Moths
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{Bea's moth code, echo=TRUE}
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+library(tidyverse)
+library(ggplot2)
+library(viridisLite)
+library(viridis)
+library(hrbrthemes)
+library(wesanderson)
+library(dplyr)
 
-```{r cars}
-summary(cars)
-```
+moths <-wesandersonmoths <- read.csv("Chi1.csv")
+glimpse(moths)
 
-## Including Plots
+moth_table <- table(moths$Species, moths$Site)
+moth_table 
 
-You can also embed plots, for example:
+chisq.test(moth_table, simulate.p.value = TRUE)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+chisq.test(moth_table, correct = TRUE)
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+plot(moth_table)
+
+ggplot(moths, aes(fill=Site, y=Count, x=Species)) + 
+  geom_bar(position="dodge", stat="identity")
+
+ggplot(moths, aes(fill=Site, y=Count, x=Species)) + 
+  geom_bar(position="stack", stat="identity")
+
+ggplot(moths, aes(fill=Site, y=Count, x=Species)) + 
+  geom_bar(position="stack", stat="identity")+
+  scale_fill_manual(values = wes_palette("GrandBudapest2")) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
+  coord_cartesian(ylim = c(0,50))
